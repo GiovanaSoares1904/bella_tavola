@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
 import pytest
+from fastapi.testclient import TestClient
+from main import app   # ajuste se necessário
 
 app = FastAPI()
 
@@ -84,6 +86,8 @@ def buscar_prato(prato_id: int):
 
 
 # Criação de pratos Post
+
+client = TestClient(app)
 
 def test_criar_prato_valido():
     novo_prato = {
