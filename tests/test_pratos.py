@@ -5,6 +5,22 @@ from main import app
 
 client = TestClient(app)
 
+@app.get("/pratos")
+def listar_pratos(categoria: str = None):
+    if categoria:
+        # Garanta que o filtro está sendo aplicado
+        return [p for p in lista_pratos if p["categoria"] == categoria]
+    return lista_pratos
+
+@app.get("/pratos/{prato_id}")
+def buscar_prato(prato_id: int):
+    # Verifique se existe um prato com ID 1 na sua lista
+    prato = next((p for p in lista_pratos if p["id"] == prato_id), None)
+    if not prato:
+        return JSONResponse(status_code=404, content={"message": "Não encontrado"})
+    return prato
+
+
 
 def test_listar_pratos_retorna_200():
     response = client.get("/pratos")
