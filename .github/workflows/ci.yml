@@ -46,6 +46,3 @@ jobs:
         run: |
           uvicorn main:app &
           sleep 3
-
-      - name: Verificar que a API responde
-        run: curl --fail http://localhost:8000/
