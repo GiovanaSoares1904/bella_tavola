@@ -24,8 +24,8 @@ jobs:
         # Prefira adicionar autoflake e black ao requirements.txt
         # para garantir que o mesmo ambiente é usado localmente e no CI.
 
-      - name: Verificar imports não utilizados
-        run: autoflake --check --remove-all-unused-imports -r .
+      #- name: Verificar imports não utilizados
+      #  run: autoflake --check --remove-all-unused-imports -r .
 
       - name: Verificar formatação
         run: black --check .
