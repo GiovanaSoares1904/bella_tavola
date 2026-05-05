@@ -1,24 +1,48 @@
-name: CI — Bella Tavola
+name: CI Pipeline
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+on: [push, pull_request]
 
 jobs:
-  verificar-api:
+  verificar-sintaxe:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Baixar o código
+      - name: Checkout código
         uses: actions/checkout@v4
 
       - name: Configurar Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: '3.10'
 
-      - name: Instalar dependências
+      - name: Instalar ferramentas de linting
+        run: pip install autoflake black
+
+      - name: Verificar imports (autoflake)
+        run: autoflake --check --remove-all-unused-imports -r .
+
+      - name: Verificar formatação (black)
+        run: black --check .
+
+  verificar-api:
+    runs-on: ubuntu-latest
+    needs: verificar-sintaxe  # Só inicia se o job anterior for bem-sucedido
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependências da API
         run: |
-          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # Caso não estejam no requirements.txt ainda:
+          pip install flask requests 
+
+      - name: Subir API e Testar
+        run: |
+          python app.py & 
+          sleep 5
+          python test_api.py
