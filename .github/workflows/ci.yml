@@ -19,6 +19,11 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Instalar dependências
+        run: |
+          pip install fastapi uvicorn pydantic-settings
+          uvicorn main:app --reload
+
       - name: Iniciar a API em background
         run: |
           uvicorn main:app --reload  
