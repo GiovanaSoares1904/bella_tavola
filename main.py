@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from routers import pratos, bebidas, pedidos, reservas
 from config import get_settings
+from main import app
 
 settings = get_settings()
 
