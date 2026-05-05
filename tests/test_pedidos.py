@@ -1,7 +1,11 @@
 from fastapi.testclient import TestClient
-from main import app 
+from main import app
 
 client = TestClient(app)
+
+# =========================
+# Testes para PEDIDOS
+# =========================
 
 # def test_listar_pedidos_retorna_200():
 #     response = client.get("/pedidos")
@@ -10,7 +14,8 @@ client = TestClient(app)
 # def test_listar_pedidos_retorna_lista():
 #     response = client.get("/pedidos")
 #     dados = response.json()
-    
+#     # Verifique se o seu endpoint realmente retorna um dicionário com a chave "pedidos"
+#     # Se ele retornar uma lista direta, use: assert isinstance(dados, list)
 #     assert "pedidos" in dados
 #     assert isinstance(dados["pedidos"], list)
 
