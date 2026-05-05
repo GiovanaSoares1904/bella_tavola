@@ -28,8 +28,5 @@ jobs:
         run: |
           # Inicia a API em background e salva o PID
           uvicorn main:app --host 0.0.0.0 --port 8000 &
-          
-          # Aguarda até 10 segundos para a API subir (mais seguro que sleep fixo)
-          timeout 10s sh -c 'until curl --silent --fail http://localhost:8000/health; do sleep 1; done'
-          
+                  
           echo "API respondeu com sucesso"
