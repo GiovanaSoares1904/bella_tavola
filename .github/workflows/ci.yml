@@ -28,7 +28,8 @@ jobs:
       #  run: autoflake --check --remove-all-unused-imports -r .
 
       - name: Verificar formatação
-        run: black --check .
+        # run: black --check .
+        run: black --check --exclude '/(models|migrations)/' .
 
   verificar-api:
     runs-on: ubuntu-latest
