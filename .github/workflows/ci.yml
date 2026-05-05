@@ -19,11 +19,6 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Instalar dependências
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
       - name: Iniciar a API em background
         run: |
           uvicorn main:app &    # (!) ajuste para o caminho do seu app
