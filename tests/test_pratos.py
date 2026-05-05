@@ -1,7 +1,7 @@
-#@title
-# tests/test_pratos.py
+import sys
+import os
 from fastapi.testclient import TestClient
-from main import app   # ajuste se necessário
+from main import app  
 
 client = TestClient(app)
 
