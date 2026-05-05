@@ -20,7 +20,7 @@ pedidos = [
     {"id": 6, "nome": "panettone", "categoria": "sobremesa", "preco": 35.0},
 ]
 
-  
+
 class PedidoInput(BaseModel):
     prato_id: int
     quantidade: int
@@ -45,21 +45,26 @@ class PedidoOutput(BaseModel):
 def formatar_preco(valor: float) -> str:
     return f"R$ {valor:.2f}"
 
+
 def formatar_lista(lista):
     return [{**item, "preco": formatar_preco(item["preco"])} for item in lista]
+
 
 class PedidosInput(BaseModel):
     prato_id: int
     quantidade: int
     observacao: str = None
-    
+
+
 class PedidosOutput(BaseModel):
     prato_id: int
     quantidade: int
-    observacao: str = None 
+    observacao: str = None
     criado_em: str
 
+
 # POST para pedidos
+
 
 @router.post("/pedidos", status_code=status.HTTP_201_CREATED)
 async def criar_pedidos(pedidos: PedidosInput):
@@ -70,15 +75,13 @@ async def criar_pedidos(pedidos: PedidosInput):
     # É aqui que o 404 é disparado manualmente
     if prato is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail="Prato não encontrado"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Prato não encontrado"
         )
 
     # 3. ERRO 400: Se o prato existe, mas está indisponível
     if not prato.get("disponivel", True):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Prato indisponível"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Prato indisponível"
         )
 
     return {
@@ -87,10 +90,10 @@ async def criar_pedidos(pedidos: PedidosInput):
             "prato": prato["nome"],
             "quantidade": pedidos.quantidade,
             "observacao": pedidos.observacao,
-            "total": formatar_preco(prato["preco"] * pedidos.quantidade)
-        }
+            "total": formatar_preco(prato["preco"] * pedidos.quantidade),
+        },
     }
-    
+
 
 def erro_padrao(request: Request, status: int, mensagem: str, detalhes: list):
     return JSONResponse(
@@ -99,7 +102,6 @@ def erro_padrao(request: Request, status: int, mensagem: str, detalhes: list):
             "erro": mensagem,
             "status": status,
             "path": str(request.url),
-            "detalhes": detalhes
-        }
+            "detalhes": detalhes,
+        },
     )
-

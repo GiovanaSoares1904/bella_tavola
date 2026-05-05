@@ -10,20 +10,86 @@ CATEGORIAS_VALIDAS = {"pizza", "massa", "sobremesa", "entrada", "salada"}
 TIPOS_VALIDOS = ["vinho", "refrigerante", "suco", "cerveja", "agua"]
 
 bebidas = [
-    {"id": 1, "nome": "Garibaldi", "tipo": "vinho", "preco": 30.0, "alcoolica": True, "volume_ml": 100},
-    {"id": 2, "nome": "Limonata", "tipo": "refrigerante", "preco": 10.0, "alcoolica": False, "volume_ml": 500},
-    {"id": 3, "nome": "Suco Natural", "tipo": "suco", "preco": 15.0, "alcoolica": False, "volume_ml": 300},
-    {"id": 4, "nome": "Cerveja Lager", "tipo": "cerveja", "preco": 12.0, "alcoolica": True, "volume_ml": 600},
-    {"id": 5, "nome": "Água Mineral", "tipo": "agua", "preco": 5.0, "alcoolica": False, "volume_ml": 500},
+    {
+        "id": 1,
+        "nome": "Garibaldi",
+        "tipo": "vinho",
+        "preco": 30.0,
+        "alcoolica": True,
+        "volume_ml": 100,
+    },
+    {
+        "id": 2,
+        "nome": "Limonata",
+        "tipo": "refrigerante",
+        "preco": 10.0,
+        "alcoolica": False,
+        "volume_ml": 500,
+    },
+    {
+        "id": 3,
+        "nome": "Suco Natural",
+        "tipo": "suco",
+        "preco": 15.0,
+        "alcoolica": False,
+        "volume_ml": 300,
+    },
+    {
+        "id": 4,
+        "nome": "Cerveja Lager",
+        "tipo": "cerveja",
+        "preco": 12.0,
+        "alcoolica": True,
+        "volume_ml": 600,
+    },
+    {
+        "id": 5,
+        "nome": "Água Mineral",
+        "tipo": "agua",
+        "preco": 5.0,
+        "alcoolica": False,
+        "volume_ml": 500,
+    },
 ]
 
 pratos = [
-    {"id": 1, "nome": "Pizza Margherita", "categoria": "pizza", "preco": 40.0, "disponivel": True},
-    {"id": 2, "nome": "Ravioli", "categoria": "massa", "preco": 35.0, "disponivel": True},
-    {"id": 3, "nome": "Salada Caesar", "categoria": "salada", "preco": 25.0, "disponivel": True},
-    {"id": 4, "nome": "Bruschetta", "categoria": "entrada", "preco": 20.0, "disponivel": True},
-    {"id": 5, "nome": "Gelato", "categoria": "sobremesa", "preco": 15.0, "disponivel": True},
+    {
+        "id": 1,
+        "nome": "Pizza Margherita",
+        "categoria": "pizza",
+        "preco": 40.0,
+        "disponivel": True,
+    },
+    {
+        "id": 2,
+        "nome": "Ravioli",
+        "categoria": "massa",
+        "preco": 35.0,
+        "disponivel": True,
+    },
+    {
+        "id": 3,
+        "nome": "Salada Caesar",
+        "categoria": "salada",
+        "preco": 25.0,
+        "disponivel": True,
+    },
+    {
+        "id": 4,
+        "nome": "Bruschetta",
+        "categoria": "entrada",
+        "preco": 20.0,
+        "disponivel": True,
+    },
+    {
+        "id": 5,
+        "nome": "Gelato",
+        "categoria": "sobremesa",
+        "preco": 15.0,
+        "disponivel": True,
+    },
 ]
+
 
 class PedidoInput(BaseModel):
     prato_id: int
@@ -60,12 +126,14 @@ class PratoInput(BaseModel):
             raise ValueError(f"Categoria inválida. Use: {CATEGORIAS_VALIDAS}")
         return v.lower()
 
+
 def formatar_preco(valor: float) -> str:
     return f"R$ {valor:.2f}"
 
 
 def formatar_lista(lista):
     return [{**item, "preco": formatar_preco(item["preco"])} for item in lista]
+
 
 # HOME com bebidas + pratos
 @app.get("/")
@@ -121,15 +189,14 @@ async def atualizar_disponibilidade(prato_id: int, disponivel: bool):
     if prato["disponivel"] == disponivel:
         estado = "disponível" if disponivel else "indisponível"
         raise HTTPException(
-            status_code=400, 
-            detail=f"O prato já está marcado como {estado}."
+            status_code=400, detail=f"O prato já está marcado como {estado}."
         )
 
     prato["disponivel"] = disponivel
 
     return {
         "mensagem": "Disponibilidade atualizada com sucesso",
-        "prato": {**prato, "preco": formatar_preco(prato["preco"])}
+        "prato": {**prato, "preco": formatar_preco(prato["preco"])},
     }
 
 
@@ -149,11 +216,12 @@ async def criar_pedido(pedido: PedidoInput):
         "pedido": {
             "prato": prato["nome"],
             "quantidade": pedido.quantidade,
-            "observacao": pedido.observacao
+            "observacao": pedido.observacao,
         },
         "bebidas_disponiveis": formatar_lista(bebidas),
-        "pratos_disponiveis": formatar_lista(pratos)
+        "pratos_disponiveis": formatar_lista(pratos),
     }
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=5000, reload=True)

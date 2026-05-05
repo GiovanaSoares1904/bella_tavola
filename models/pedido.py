@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 
+
 class PratoOutput(BaseModel):
     id: int
     nome: str
