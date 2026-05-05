@@ -29,7 +29,8 @@ jobs:
 
       - name: Verificar formatação
         # run: black --check .
-        run: black --check --exclude '/(models|routers)/' .
+        run: black --check --exclude 'bella_tavola/(models|routers)/' .
+      
 
   verificar-api:
     runs-on: ubuntu-latest
