@@ -1,49 +1,45 @@
-# @title
-# tests/test_pedidos.py
 from fastapi.testclient import TestClient
-from main import app   # ajuste se necessário
+from main import app 
 
 client = TestClient(app)
 
-# def test_criar_pedido_com_prato_existente():
-#      payload = {
-#          "prato_id": 1,
-#          "quantidade": 2,
-#          "observacao": "sem cebola"
-#      }
-#      response = client.post("/pedidos", json=payload)
-#      assert response.status_code in [200, 201]
-#      dados = response.json()
-#      assert "valor_total" in dados
-#      assert "nome_prato" in dados
+# função pratos se existir na API
 
+def test_raiz_retorna_nome_restaurante():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "Bella Tavola" in response.json()["restaurante"]
 
-# def test_valor_total_calculado_corretamente():
-#      prato = client.get("/pratos/1").json()
-#      preco_unitario = prato["preco"]
+def test_listar_pratos_retorna_200():
+    response = client.get("/pratos")
+    assert response.status_code == 200
 
-#      payload = {"prato_id": 1, "quantidade": 3}
-#      response = client.post("/pedidos", json=payload)
-#      assert response.status_code in [200, 201]
-#      assert response.json()["valor_total"] == preco_unitario * 3
+def test_listar_pratos_retorna_lista():
+    response = client.get("/pratos")
+    assert isinstance(response.json(), list)
 
+def test_listar_pratos_retorna_pelo_menos_um_prato():
+    response = client.get("/pratos")
+    assert len(response.json()) > 0
 
-# def test_criar_pedido_com_prato_inexistente_retorna_404():
-#      payload = {"prato_id": 9999, "quantidade": 1}
-#      response = client.post("/pedidos", json=payload)
-#      assert response.status_code == 404
+def test_buscar_prato_inexistente_retorna_404():
+    response = client.get("/pratos/9999")
+    assert response.status_code == 404
 
+# Adicionando bebidas 
 
-# def test_criar_pedido_com_prato_indisponivel_retorna_400():
-#      client.put("/pratos/1/disponibilidade", json={"disponivel": False})
-#      payload = {"prato_id": 1, "quantidade": 1}
-#      response = client.post("/pedidos", json=payload)
-#      assert response.status_code == 400
-#      # Restaura para não afetar outros testes
-#      client.put("/pratos/1/disponibilidade", json={"disponivel": True})
+def test_listar_bebidas_retorna_200():
+    response = client.get("/bebidas")
+    assert response.status_code == 200
 
+def test_listar_bebidas_retorna_lista():
+    response = client.get("/bebidas")
+    assert isinstance(response.json(), list)
 
-# def test_criar_pedido_com_quantidade_zero_retorna_422():
-#      payload = {"prato_id": 1, "quantidade": 0}
-#      response = client.post("/pedidos", json=payload)
-#      assert response.status_code == 422 
+def test_listar_bebidas_retorna_pelo_menos_uma_bebida():
+    response = client.get("/bebidas")
+    assert len(response.json()) > 0
+
+def test_buscar_bebida_inexistente_retorna_404():
+    response = client.get("/bebidas/9999")
+    assert response.status_code == 404

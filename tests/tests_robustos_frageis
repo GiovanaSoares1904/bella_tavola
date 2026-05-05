@@ -1,0 +1,32 @@
+import pytest
+from fastapi.testclient import TestClient
+from app.main import app
+
+client = TestClient(app)
+
+@pytest.fixture
+def prato_valido():
+    return {"nome": "Carbonara", "categoria": "massa"}
+
+def test_lista_retorna_dados_validos():
+    response = client.get("/pratos")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+
+def test_prato_margherita_esta_na_lista():
+    response = client.get("/pratos")
+    nomes = [prato["nome"] for prato in response.json()]
+    assert "Margherita" in nomes
+
+def test_cria_novo_prato_com_sucesso(prato_valido):
+    response = client.post("/pratos", json=prato_valido)
+    dados = response.json()
+    assert response.status_code == 201
+    assert "id" in dados
+    assert isinstance(dados["id"], int)
+
+def test_filtro_por_categoria_aplica_corretamente():
+    categoria = "pizza"
+    response = client.get(f"/pratos?categoria={categoria}")
+    dados = response.json()
+    assert all(p["categoria"] == categoria for p in dados)
