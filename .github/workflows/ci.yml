@@ -21,10 +21,10 @@ jobs:
 
       - name: Iniciar a API em background
         run: |
-          uvicorn main:app &    # (!) ajuste para o caminho do seu app
+          uvicorn main:app --reload  
           sleep 3
 
       - name: Verificar que a API responde
         run: |
-          curl --fail http://localhost:8000/docs  # (!) ajuste para sua rota
-          echo "API 
+          curl --fail http://localhost:8000/docs  
+          echo "API respondeu com sucesso"
