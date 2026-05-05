@@ -1,48 +1,25 @@
-name: CI — Bella Tavola
+name: CI Pipeline
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+on: [push, pull_request] # Define quando o workflow será executado
 
 jobs:
-  verificar-sintaxe:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest # O sistema operacional da máquina virtual
 
     steps:
-      - name: Baixar o código
-        uses: actions/checkout@v4
+      - name: Checkout do código
+        uses: actions/checkout@v4 # Baixa o código do seu repositório
 
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.10' # Versão do Python que você deseja usar
 
-      - name: Instalar ferramentas de qualidade
-        run: pip install autoflake black
-        # Prefira adicionar autoflake e black ao requirements.txt
-        # para garantir que o mesmo ambiente é usado localmente e no CI.
-
-      #- name: Verificar imports não utilizados
-      #  run: autoflake --check --remove-all-unused-imports -r .
-
-      
-
-  verificar-api:
-    runs-on: ubuntu-latest
-    needs: verificar-sintaxe      # só roda se o job anterior passar
-
-    steps:
-      - name: Baixar o código
-        uses: actions/checkout@v4
-
-      - name: Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Iniciar a API em background
+      - name: Instalar dependências
         run: |
-          uvicorn main:app &
-          sleep 3
+          python -m pip install --upgrade pip
+          pip install pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Rodar testes
+        run: pytest tests/ -v --tb=short
